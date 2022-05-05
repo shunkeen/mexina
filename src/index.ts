@@ -39,6 +39,7 @@ export { toLazyList } from './producer/toLazyList';
 /**
  * prosumer
  */
+export { tap } from './prosumer/tap';
 
 /**
  * consumer
