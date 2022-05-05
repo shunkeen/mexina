@@ -1,2 +1,163 @@
-# mexina
-Mexina is a iterator library for TypeScript.
+# ループを回す方法とループの中身のロジックを分離する実験
+
+ループを回す方法は4つ。
+
+|回し方|次の要素の評価順序|結果の再利用|再計算|
+|:----:|:--:|:----------:|:----:|
+|配列(exArray)|正格|可能|不可|
+|ジェネレータ(exGenerator)|遅延|不可|不可|
+|イテラブル（exIterable）|遅延|不可|可能|
+|遅延リスト(exLazyList)|遅延|可能|不可|
+
+以降に示すコードでは、ループの中身になるロジック（`tap`, `slice`, `forEach`）はすべて同一のロジックを使っている。
+だが、ループを回す方法によって評価順序と再利用の可否、再計算の可否が変わっている。
+そういう実験。
+
+
+## 配列(exArray)
+
+* 正格評価
+* 再計算はされず、結果が再利用される
+
+```ts
+// https://github.com/shunkeen/mexina/blob/main/src/index.ts
+import { tap, slice, forEach, exArray } from './index';
+
+// 先行評価なのでコンソールにログが表示される
+const exA = exArray([1, 2, 3, 4, 5])
+    .pipe(tap((x) => console.log(`exArray-pipe-A: ${x}`)))
+    .pipe(slice(1, 3))
+    .pipe(tap((x) => console.log(`exArray-pipe-B: ${x}`)));
+// exArray-pipe-A: 1
+// exArray-pipe-A: 2
+// exArray-pipe-A: 3
+// exArray-pipe-A: 4
+// exArray-pipe-A: 5
+// exArray-pipe-B: 2
+// exArray-pipe-B: 3
+
+// 結果を再利用可能なので、2回実行すれば2回ともログが表示される
+exA.end(forEach((x) => console.log(`exArray-end: ${x}`)));
+// exArray-end: 2
+// exArray-end: 3
+
+exA.end(forEach((x) => console.log(`exArray-end: ${x}`)));
+// exArray-end: 2
+// exArray-end: 3
+```
+
+
+## ジェネレータ(exGenerator)
+
+* 遅延評価
+* 再計算はされないが、結果の再利用もできない
+
+```ts
+// https://github.com/shunkeen/mexina/blob/main/src/index.ts
+import { tap, slice, forEach, exGenerator } from './index';
+
+// 遅延評価なので無限ループが扱える
+function* infG() {
+    while (true) yield* [1, 2, 3, 4, 5];
+}
+
+// 遅延評価なのでコンソールには何も表示されない
+const exG = exGenerator(infG())
+    .pipe(tap((x) => console.log(`exGenerator-pipe-A: ${x}`)))
+    .pipe(slice(1, 3))
+    .pipe(tap((x) => console.log(`exGenerator-pipe-B: ${x}`)));
+
+// 2回実行しても1回しかログが表示されない（再計算も結果の再利用もできない）
+exG.end(forEach((x) => console.log(`exGenerator-end: ${x}`)));
+// exGenerator-pipe-A: 1
+// exGenerator-pipe-A: 2
+// exGenerator-pipe-B: 2
+// exGenerator-end: 2
+// exGenerator-pipe-A: 3
+// exGenerator-pipe-B: 3
+// exGenerator-end: 3
+
+exG.end(forEach((x) => console.log(`exGenerator-end: ${x}`)));
+```
+
+
+## イテラブル（exIterable）
+
+* 遅延評価
+* 結果は再利用できない
+* 元になるイテラブルが再計算可能であれば、全体としても再計算可能
+
+```ts
+// https://github.com/shunkeen/mexina/blob/main/src/index.ts
+import { tap, slice, forEach, exGenerator } from './index';
+
+// 遅延評価なので無限ループが扱える
+const infI = {
+    *[Symbol.iterator]() {
+        while (true) yield* [1, 2, 3, 4, 5];
+    },
+};
+
+// 遅延評価なのでコンソールには何も表示されない
+const exI = exIterable(infI)
+    .pipe(tap((x) => console.log(`exIterable-pipe-A: ${x}`)))
+    .pipe(slice(1, 3))
+    .pipe(tap((x) => console.log(`exIterable-pipe-B: ${x}`)));
+
+// 再計算されるので、2回実行すれば2回ともログが表示される
+exI.end(forEach((x) => console.log(`exIterable-end: ${x}`)));
+// exIterable-pipe-A: 1
+// exIterable-pipe-A: 2
+// exIterable-pipe-B: 2
+// exIterable-end: 2
+// exIterable-pipe-A: 3
+// exIterable-pipe-B: 3
+// exIterable-end: 3
+
+exI.end(forEach((x) => console.log(`exIterable-end: ${x}`)));
+// exIterable-pipe-A: 1
+// exIterable-pipe-A: 2
+// exIterable-pipe-B: 2
+// exIterable-end: 2
+// exIterable-pipe-A: 3
+// exIterable-pipe-B: 3
+// exIterable-end: 3
+```
+
+
+## 遅延リスト(exLazyList)
+
+* 遅延評価
+* 再計算はされず、結果が再利用される
+
+```ts
+// https://github.com/shunkeen/mexina/blob/main/src/index.ts
+import { tap, slice, forEach, exLazyList, LazyList, lazyList, lazyTail } from './index';
+
+// 遅延評価なので無限ループ（無限リスト）が扱える
+const ll1: LazyList<number> = lazyList(() => lazyTail(1, ll2));
+const ll2 = lazyList(() => lazyTail(2, ll3));
+const ll3 = lazyList(() => lazyTail(3, ll4));
+const ll4 = lazyList(() => lazyTail(4, ll5));
+const ll5 = lazyList(() => lazyTail(5, ll1));
+
+// 遅延評価なのでコンソールには何も表示されない
+const exL = exLazyList(ll1)
+    .pipe(tap((x) => console.log(`exLazyList-pipe-A: ${x}`)))
+    .pipe(slice(1, 3))
+    .pipe(tap((x) => console.log(`exLazyList-pipe-B: ${x}`)));
+
+// 結果が再利用されるので、2回実行すれば2回ともログが表示される
+exL.end(forEach((x) => console.log(`exLazyList-end: ${x}`)));
+// exLazyList-pipe-A: 1
+// exLazyList-pipe-A: 2
+// exLazyList-pipe-B: 2
+// exLazyList-end: 2
+// exLazyList-pipe-A: 3
+// exLazyList-pipe-B: 3
+// exLazyList-end: 3
+
+exL.end(forEach((x) => console.log(`exLazyList-end: ${x}`)));
+// exLazyList-end: 2
+// exLazyList-end: 3
+```
