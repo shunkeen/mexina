@@ -1,4 +1,4 @@
-import { at, exArray, exGenerator } from '../index';
+import { at, exArray, exGenerator, exIterable } from '../index';
 
 test('first', () => {
     const x = exArray(['a', 'b', 'c']).end(at(0));
@@ -39,6 +39,18 @@ test('exGenerator', () => {
     }
 
     const x = exGenerator(infinite()).end(at(1));
+    if (x.kind === 'throw') throw x;
+    expect(x.value).toBe('b');
+});
+
+test('exIterable', () => {
+    const infinite = {
+        *[Symbol.iterator]() {
+            while (true) yield* ['a', 'b', 'c'];
+        },
+    };
+
+    const x = exIterable(infinite).end(at(1));
     if (x.kind === 'throw') throw x;
     expect(x.value).toBe('b');
 });

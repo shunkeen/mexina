@@ -11,12 +11,21 @@ export {
     toExGenerator,
 } from './ex/exGenerator';
 
+export {
+    ExIterable,
+    exIterable,
+    exFromIterable,
+    toExIterable,
+} from './ex/exIterable';
+
 /**
  * producer
  */
 export { fromArray } from './producer/fromArray';
+export { fromIterable } from './producer/fromIterable';
 export { fromIterator } from './producer/fromIterator';
 export { toGenerator } from './producer/toGenerator';
+export { toIterable } from './producer/toIterable';
 
 /**
  * prosumer
