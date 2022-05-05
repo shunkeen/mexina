@@ -1,0 +1,36 @@
+{
+  "name": "mexina",
+  "version": "0.0.1",
+  "description": "Mexina is a iterator library for TypeScript.",
+  "main": "dist-cjs/index.js",
+  "module": "dist-esm/index.js",
+  "types": "dist-cjs/index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "fix": "run-s fix:prettier fix:eslint",
+    "fix:eslint": "eslint src --ext .ts --fix",
+    "fix:prettier": "prettier --write src",
+    "lint": "run-p lint:prettier lint:eslint",
+    "lint:eslint": "eslint src --ext .ts",
+    "lint:prettier": "prettier --check src",
+    "build": "npm-run-all -s build:cjs build:esm",
+    "build:cjs": "tsc --project . --module commonjs --outDir ./dist-cjs",
+    "build:esm": "tsc --project . --module es2015 --outDir ./dist-esm"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "@typescript-eslint/eslint-plugin": "^5.21.0",
+    "@typescript-eslint/parser": "^5.21.0",
+    "eslint": "^8.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jest": "^26.1.5",
+    "jest": "^27.5.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.6.2",
+    "ts-jest": "^27.1.4",
+    "typescript": "^4.6.4"
+  }
+}
