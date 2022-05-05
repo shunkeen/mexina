@@ -4,10 +4,19 @@
 export { Ex, ex } from './ex/ex';
 export { ExArray, exArray, exFromArray, toExArray } from './ex/exArray';
 
+export {
+    ExGenerator,
+    exGenerator,
+    exFromGenerator,
+    toExGenerator,
+} from './ex/exGenerator';
+
 /**
  * producer
  */
 export { fromArray } from './producer/fromArray';
+export { fromIterator } from './producer/fromIterator';
+export { toGenerator } from './producer/toGenerator';
 
 /**
  * prosumer

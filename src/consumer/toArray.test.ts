@@ -1,4 +1,4 @@
-import { toArray, exArray } from '../index';
+import { toArray, exArray, exGenerator } from '../index';
 
 test('empty', () => {
     const array = exArray<number>([]).end(toArray());
@@ -7,5 +7,14 @@ test('empty', () => {
 
 test('non empty', () => {
     const array = exArray([1, 2, 3, 4]).end(toArray());
+    expect(array).toStrictEqual([1, 2, 3, 4]);
+});
+
+test('exGenerator', () => {
+    function* generator() {
+        yield* [1, 2, 3, 4];
+    }
+
+    const array = exGenerator(generator()).end(toArray());
     expect(array).toStrictEqual([1, 2, 3, 4]);
 });

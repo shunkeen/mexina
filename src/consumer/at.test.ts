@@ -1,4 +1,4 @@
-import { at, exArray } from '../index';
+import { at, exArray, exGenerator } from '../index';
 
 test('first', () => {
     const x = exArray(['a', 'b', 'c']).end(at(0));
@@ -31,4 +31,14 @@ test('empty', () => {
     if (x.kind === 'return') throw new TypeError();
     expect(x.cause).toBeInstanceOf(RangeError);
     expect(x.cause.message).toBe('mexina.at: index too large');
+});
+
+test('exGenerator', () => {
+    function* infinite() {
+        while (true) yield* ['a', 'b', 'c'];
+    }
+
+    const x = exGenerator(infinite()).end(at(1));
+    if (x.kind === 'throw') throw x;
+    expect(x.value).toBe('b');
 });
