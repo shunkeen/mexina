@@ -1,4 +1,13 @@
-import { at, exArray, exGenerator, exIterable } from '../index';
+import {
+    at,
+    exArray,
+    exGenerator,
+    exIterable,
+    exLazyList,
+    LazyList,
+    lazyList,
+    lazyTail,
+} from '../index';
 
 test('first', () => {
     const x = exArray(['a', 'b', 'c']).end(at(0));
@@ -51,6 +60,16 @@ test('exIterable', () => {
     };
 
     const x = exIterable(infinite).end(at(1));
+    if (x.kind === 'throw') throw x;
+    expect(x.value).toBe('b');
+});
+
+test('exLazyList', () => {
+    const llA: LazyList<string> = lazyList(() => lazyTail('a', llB));
+    const llB = lazyList(() => lazyTail('b', llC));
+    const llC = lazyList(() => lazyTail('c', llA));
+
+    const x = exLazyList(llA).end(at(1));
     if (x.kind === 'throw') throw x;
     expect(x.value).toBe('b');
 });

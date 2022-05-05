@@ -18,14 +18,23 @@ export {
     toExIterable,
 } from './ex/exIterable';
 
+export {
+    ExLazyList,
+    exLazyList,
+    exFromLazyList,
+    toExLazyList,
+} from './ex/exLazyList';
+
 /**
  * producer
  */
 export { fromArray } from './producer/fromArray';
 export { fromIterable } from './producer/fromIterable';
 export { fromIterator } from './producer/fromIterator';
+export { fromLazyList } from './producer/fromLazyList';
 export { toGenerator } from './producer/toGenerator';
 export { toIterable } from './producer/toIterable';
+export { toLazyList } from './producer/toLazyList';
 
 /**
  * prosumer
@@ -75,3 +84,13 @@ export { DeProducer, toProducer } from './machine/toProducer';
  * datatype
  */
 export { ExCatch, exCatch, ExThrow, exThrow } from './datatype/exCatch';
+
+export {
+    LazyList,
+    lazyList,
+    Nil,
+    nil,
+    LazyTail,
+    lazyTail,
+    ReturnLazyList,
+} from './datatype/lazyList';
