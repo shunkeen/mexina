@@ -44,6 +44,7 @@ export { toLazyList } from './producer/toLazyList';
  * consumer
  */
 export { at } from './consumer/at';
+export { forEach } from './consumer/forEach';
 export { toArray } from './consumer/toArray';
 
 /**
