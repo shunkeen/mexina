@@ -29,7 +29,6 @@ test('exGenerator', () => {
 
     const odd = (x: number): boolean => x % 2 === 1;
     const array = exGenerator(generator()).pipe(filter(odd)).end(toArray());
-
     expect(array).toStrictEqual([1, 3]);
 });
 
