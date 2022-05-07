@@ -56,8 +56,10 @@ export { tap } from './prosumer/tap';
 /**
  * consumer
  */
+export { detect } from './consumer/detect';
 export { at } from './consumer/at';
 export { every } from './consumer/every';
+export { find } from './consumer/find';
 export { forEach } from './consumer/forEach';
 export { toArray } from './consumer/toArray';
 
@@ -109,3 +111,5 @@ export {
     lazyTail,
     ReturnLazyList,
 } from './datatype/lazyList';
+
+export { NotFoundError } from './datatype/notFoundError';
