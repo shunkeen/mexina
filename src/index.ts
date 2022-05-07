@@ -65,6 +65,7 @@ export { forEach } from './consumer/forEach';
 export { includes } from './consumer/includes';
 export { indexOf } from './consumer/indexOf';
 export { join } from './consumer/join';
+export { lastIndexOf } from './consumer/lastIndexOf';
 export { length } from './consumer/length';
 export { reduce } from './consumer/reduce';
 export { reduce1 } from './consumer/reduce1';
