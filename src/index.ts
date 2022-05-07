@@ -42,7 +42,9 @@ export { toLazyList } from './producer/toLazyList';
  */
 export { concat } from './prosumer/concat';
 export { fill } from './prosumer/fill';
+export { filter } from './prosumer/filter';
 export { full } from './prosumer/full';
+export { sifter } from './prosumer/sifter';
 export { slice } from './prosumer/slice';
 export { tap } from './prosumer/tap';
 
