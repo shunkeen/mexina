@@ -22,6 +22,24 @@ test('non empty', () => {
     expect(array).toStrictEqual([1, 3]);
 });
 
+test('empty with type guard', () => {
+    const isString = (x: unknown): x is string => typeof x === 'string';
+    const array = exArray<number | string>([]).pipe(filter(isString)).get;
+    expect(array.length).toBe(0);
+
+    const _: ReadonlyArray<string> = array;
+    void _; // type test
+});
+
+test('non empty with type guard', () => {
+    const isString = (x: unknown): x is string => typeof x === 'string';
+    const array = exArray(['a', 2, 'c']).pipe(filter(isString)).get;
+    expect(array).toStrictEqual(['a', 'c']);
+
+    const _: ReadonlyArray<string> = array;
+    void _; // type test
+});
+
 test('exGenerator', () => {
     function* generator() {
         yield* [1, 2, 3];
