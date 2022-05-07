@@ -1,4 +1,4 @@
-import { Prosumer, exAwait, exBreak, exYield, nop } from '../machine/machine';
+import { Prosumer, exAwait, exYield, nop } from '../machine/machine';
 
 type Entries<T> = Prosumer<T, number, readonly [number, T]>;
 export function entries<T>(): Entries<T> {
@@ -8,7 +8,7 @@ export function entries<T>(): Entries<T> {
         next: (count, event) => {
             if (event.kind === 'continue') return [count, exAwait];
             return event.kind === 'break'
-                ? [count, exBreak]
+                ? [count, event]
                 : [count + 1, exYield([count, event.value])];
         },
     };

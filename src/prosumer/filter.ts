@@ -1,4 +1,4 @@
-import { Prosumer, exAwait, exBreak, nop } from '../machine/machine';
+import { Prosumer, exAwait, nop } from '../machine/machine';
 
 type Filter<T> = Prosumer<T, undefined, T>;
 export function filter<T>(predicate: (value: T) => boolean): Filter<T> {
@@ -7,7 +7,7 @@ export function filter<T>(predicate: (value: T) => boolean): Filter<T> {
         init: undefined,
         next: (_, event) => {
             if (event.kind === 'continue') return [_, exAwait];
-            if (event.kind === 'break') return [_, exBreak];
+            if (event.kind === 'break') return [_, event];
             return predicate(event.value) ? [_, event] : [_, exAwait];
         },
     };

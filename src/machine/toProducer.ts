@@ -3,7 +3,6 @@ import {
     ProducerAction,
     Prosumer,
     ProsumerAction,
-    exBreak,
     exContinue,
 } from './machine';
 
@@ -22,7 +21,7 @@ export function toProducer<Q, R, S, T>(
     return {
         init: [producer.init, exContinue, prosumer.init, exContinue],
         next: ([pds, pda, pss, psa]) => {
-            if (psa.kind === 'break') return [[pds, pda, pss, psa], exBreak];
+            if (psa.kind === 'break') return [[pds, pda, pss, psa], psa];
             if (psa.kind === 'yield') return [[pds, pda, pss, exContinue], psa];
 
             if (psa.kind === 'continue')
