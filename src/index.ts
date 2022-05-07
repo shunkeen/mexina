@@ -66,6 +66,7 @@ export { indexOf } from './consumer/indexOf';
 export { length } from './consumer/length';
 export { reduce } from './consumer/reduce';
 export { reduce1 } from './consumer/reduce1';
+export { some } from './consumer/some';
 export { toArray } from './consumer/toArray';
 
 /**
