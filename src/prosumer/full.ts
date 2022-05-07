@@ -1,15 +1,13 @@
 import { Prosumer, exAwait, exYield, nop } from '../machine/machine';
 
-type Full<T> = Prosumer<unknown, number, T>;
+type Full<T> = Prosumer<unknown, undefined, T>;
 export function full<T>(value: T): Full<T> {
     return {
         done: nop,
-        init: 0,
-        next: (count, event) => {
-            if (event.kind === 'continue') return [count, exAwait];
-            return event.kind === 'break'
-                ? [count, event]
-                : [count + 1, exYield(value)];
+        init: undefined,
+        next: (_, event) => {
+            if (event.kind === 'continue') return [_, exAwait];
+            return event.kind === 'break' ? [_, event] : [_, exYield(value)];
         },
     };
 }
