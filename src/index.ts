@@ -56,12 +56,13 @@ export { tap } from './prosumer/tap';
 /**
  * consumer
  */
-export { detect } from './consumer/detect';
 export { at } from './consumer/at';
+export { detect } from './consumer/detect';
 export { every } from './consumer/every';
 export { find } from './consumer/find';
 export { findIndex } from './consumer/findIndex';
 export { forEach } from './consumer/forEach';
+export { includes } from './consumer/includes';
 export { indexOf } from './consumer/indexOf';
 export { join } from './consumer/join';
 export { length } from './consumer/length';
