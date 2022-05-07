@@ -1,4 +1,4 @@
-import { exAwait, exYield, nop, Prosumer } from '../machine/machine';
+import { Prosumer, exAwait, exYield, nop } from '../machine/machine';
 
 type Filter<R, T extends R> = Prosumer<R, undefined, T>;
 type FilterFunction = {
