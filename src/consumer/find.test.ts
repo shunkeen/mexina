@@ -30,6 +30,32 @@ test('empty', () => {
     expect(x.cause.message).toBe('mexina.find: not found');
 });
 
+test('found with type guard', () => {
+    const isString = (x: unknown): x is string => typeof x === 'string';
+    const x = exArray([1, 'b', 3]).end(find(isString));
+    if (x.kind === 'throw') throw x;
+    expect(x.value).toBe('b');
+
+    const _: string = x.value;
+    void _; // type test
+});
+
+test('not found with type guard', () => {
+    const isString = (x: unknown): x is string => typeof x === 'string';
+    const x = exArray([1, 2, 3]).end(find(isString));
+    if (x.kind === 'return') throw new TypeError();
+    expect(x.cause).toBeInstanceOf(NotFoundError);
+    expect(x.cause.message).toBe('mexina.find: not found');
+});
+
+test('empty with type guard', () => {
+    const isString = (x: unknown): x is string => typeof x === 'string';
+    const x = exArray([]).end(find(isString));
+    if (x.kind === 'return') throw new TypeError();
+    expect(x.cause).toBeInstanceOf(NotFoundError);
+    expect(x.cause.message).toBe('mexina.find: not found');
+});
+
 test('exGenerator', () => {
     function* infinite() {
         while (true) yield* [1, 2, 3];

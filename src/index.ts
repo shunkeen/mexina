@@ -55,7 +55,6 @@ export { tap } from './prosumer/tap';
  * consumer
  */
 export { at } from './consumer/at';
-export { detect } from './consumer/detect';
 export { every } from './consumer/every';
 export { find } from './consumer/find';
 export { findIndex } from './consumer/findIndex';

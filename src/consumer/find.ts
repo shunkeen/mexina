@@ -1,12 +1,27 @@
-import { Consumer } from '../machine/machine';
-import { ExCatch } from '../datatype/exCatch';
+import { Consumer, exAwait, exReturn, nop } from '../machine/machine';
+import { ExCatch, exThrow } from '../datatype/exCatch';
 import { NotFoundError } from '../datatype/notFoundError';
-import { makeDetectFunction } from './detect';
 
-type Find<T> = Consumer<T, undefined, ExCatch<T, NotFoundError>>;
+type Find<R, T extends R> = Consumer<R, undefined, ExCatch<T, NotFoundError>>;
+type FindFunction = {
+    <R, T extends R>(predicate: (value: R) => value is T): Find<R, T>;
+    <R>(predicate: (value: R) => boolean): Find<R, R>;
+};
 
-const rawFind = makeDetectFunction('find');
+export const find: FindFunction = <R, T extends R>(
+    predicate: ((value: R) => value is T) | ((value: R) => boolean)
+): Find<R, T> => ({
+    done: nop,
+    init: undefined,
+    next: (_, event) => {
+        if (event.kind === 'continue') return [_, exAwait];
+        if (event.kind === 'yield')
+            return predicate(event.value)
+                ? [_, exReturn(exReturn(event.value))]
+                : [_, exAwait];
 
-export function find<T>(predicate: (value: T) => boolean): Find<T> {
-    return rawFind((value): value is T => predicate(value));
-}
+        const error = new NotFoundError('mexina.find: not found');
+        const result = exThrow(error);
+        return [_, exReturn(result)];
+    },
+});
