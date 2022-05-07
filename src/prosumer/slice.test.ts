@@ -47,13 +47,31 @@ test('end gt length', () => {
 });
 
 test('start eq end', () => {
-    const array = exArray([1, 2, 3, 4, 5]).pipe(slice(2, 2)).get;
-    expect(array.length).toBe(0);
+    function* generator() {
+        yield* [1, 2, 3, 4];
+    }
+
+    const log: number[] = [];
+    exGenerator(generator())
+        .pipe(tap((x) => log.push(x)))
+        .pipe(slice(2, 2))
+        .end(forEach((x) => log.push(x)));
+
+    expect(log.length).toBe(0);
 });
 
 test('start gt end', () => {
-    const array = exArray([1, 2, 3, 4, 5]).pipe(slice(3, 1)).get;
-    expect(array.length).toBe(0);
+    function* generator() {
+        yield* [1, 2, 3, 4];
+    }
+
+    const log: number[] = [];
+    exGenerator(generator())
+        .pipe(tap((x) => log.push(x)))
+        .pipe(slice(3, 1))
+        .end(forEach((x) => log.push(x)));
+
+    expect(log.length).toBe(0);
 });
 
 test('negative start', () => {
@@ -61,9 +79,32 @@ test('negative start', () => {
     expect(array).toStrictEqual([1, 2, 3]);
 });
 
+test('end eq zero', () => {
+    function* generator() {
+        yield* [1, 2, 3, 4];
+    }
+
+    const log: number[] = [];
+    exGenerator(generator())
+        .pipe(tap((x) => log.push(x)))
+        .pipe(slice(-1, 0))
+        .end(forEach((x) => log.push(x)));
+
+    expect(log.length).toBe(0);
+});
+
 test('negative end', () => {
-    const array = exArray([1, 2, 3, 4, 5]).pipe(slice(-3, -1)).get;
-    expect(array.length).toBe(0);
+    function* generator() {
+        yield* [1, 2, 3, 4];
+    }
+
+    const log: number[] = [];
+    exGenerator(generator())
+        .pipe(tap((x) => log.push(x)))
+        .pipe(slice(-3, -1))
+        .end(forEach((x) => log.push(x)));
+
+    expect(log.length).toBe(0);
 });
 
 test('array', () => {
