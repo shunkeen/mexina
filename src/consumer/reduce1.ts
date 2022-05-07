@@ -1,8 +1,8 @@
 import { Consumer, exAwait, exReturn, nop } from '../machine/machine';
 import { ExCatch, exThrow } from '../datatype/exCatch';
 
-type Reduce1<T> = Consumer<T, ExCatch<T, RangeError>, ExCatch<T, RangeError>>;
 type Reducer1<T> = (result: T, value: T) => T;
+type Reduce1<T> = Consumer<T, ExCatch<T, RangeError>, ExCatch<T, RangeError>>;
 
 export function reduce1<T>(reducer: Reducer1<T>): Reduce1<T> {
     return {

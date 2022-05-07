@@ -1,7 +1,7 @@
 import { ExReturn, exReturn } from '../machine/machine';
 
-export type ExCatch<T, E extends Error> = ExReturn<T> | ExThrow<E>;
 type Guard<E extends Error> = (cause: unknown) => cause is E;
+export type ExCatch<T, E extends Error> = ExReturn<T> | ExThrow<E>;
 
 export function exCatch<E extends Error>(guard: Guard<E>) {
     return <T>(thunk: () => T): ExCatch<T, E> => {
