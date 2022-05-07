@@ -46,6 +46,7 @@ export { filter } from './prosumer/filter';
 export { flatMap } from './prosumer/flatMap';
 export { full } from './prosumer/full';
 export { map } from './prosumer/map';
+export { reverse } from './prosumer/reverse';
 export { sifter } from './prosumer/sifter';
 export { slice } from './prosumer/slice';
 export { tap } from './prosumer/tap';
