@@ -26,7 +26,7 @@ test('catch', () => {
         throw EvalError('catch');
     });
 
-    if (x.kind === 'return') throw TypeError();
+    if (x.kind === 'return') throw new TypeError();
     expect(x.cause).toBeInstanceOf(EvalError);
     expect(x.cause.message).toBe('catch');
 });
@@ -54,7 +54,7 @@ test('rethrow', () => {
         }
     })();
 
-    if (x.kind === 'return') throw TypeError();
+    if (x.kind === 'return') throw new TypeError();
     expect(x.cause).toBeInstanceOf(SyntaxError);
     expect(x.cause.message).toBe('rethrow');
 });
