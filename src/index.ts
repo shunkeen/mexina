@@ -63,6 +63,7 @@ export { find } from './consumer/find';
 export { findIndex } from './consumer/findIndex';
 export { forEach } from './consumer/forEach';
 export { indexOf } from './consumer/indexOf';
+export { length } from './consumer/length';
 export { toArray } from './consumer/toArray';
 
 /**
