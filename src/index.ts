@@ -57,6 +57,7 @@ export { tap } from './prosumer/tap';
  * consumer
  */
 export { at } from './consumer/at';
+export { every } from './consumer/every';
 export { forEach } from './consumer/forEach';
 export { toArray } from './consumer/toArray';
 
