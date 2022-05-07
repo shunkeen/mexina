@@ -50,6 +50,7 @@ export { map } from './prosumer/map';
 export { reverse } from './prosumer/reverse';
 export { sifter } from './prosumer/sifter';
 export { slice } from './prosumer/slice';
+export { sort } from './prosumer/sort';
 export { tap } from './prosumer/tap';
 
 /**
