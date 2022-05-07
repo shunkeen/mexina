@@ -32,6 +32,7 @@ export { fromArray } from './producer/fromArray';
 export { fromIterable } from './producer/fromIterable';
 export { fromIterator } from './producer/fromIterator';
 export { fromLazyList } from './producer/fromLazyList';
+export { of } from './producer/of';
 export { toGenerator } from './producer/toGenerator';
 export { toIterable } from './producer/toIterable';
 export { toLazyList } from './producer/toLazyList';
