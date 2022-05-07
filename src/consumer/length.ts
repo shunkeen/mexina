@@ -1,10 +1,4 @@
-import {
-    Consumer,
-    exAwait,
-    exContinue,
-    exReturn,
-    nop,
-} from '../machine/machine';
+import { Consumer, exAwait, exReturn, nop } from '../machine/machine';
 
 type Lenth = Consumer<unknown, number, number>;
 export const length: Lenth = {
@@ -14,6 +8,6 @@ export const length: Lenth = {
         if (event.kind === 'continue') return [count, exAwait];
         return event.kind === 'break'
             ? [count, exReturn(count)]
-            : [count + 1, exContinue];
+            : [count + 1, exAwait];
     },
 };

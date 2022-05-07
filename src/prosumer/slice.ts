@@ -1,10 +1,4 @@
-import {
-    Prosumer,
-    exAwait,
-    exBreak,
-    exContinue,
-    nop,
-} from '../machine/machine';
+import { Prosumer, exAwait, exBreak, nop } from '../machine/machine';
 
 type Slice<T> = Prosumer<T, number, T>;
 export function slice<T>(start = 0, end = Infinity): Slice<T> {
@@ -22,7 +16,7 @@ export function slice<T>(start = 0, end = Infinity): Slice<T> {
         next: (count, event) => {
             if (count >= end || event.kind === 'break') return [count, exBreak];
             if (event.kind === 'continue') return [count, exAwait];
-            return count < start ? [count + 1, exContinue] : [count + 1, event];
+            return count < start ? [count + 1, exAwait] : [count + 1, event];
         },
     };
 }

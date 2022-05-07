@@ -23,12 +23,13 @@ export function bulk<R, T>(transformer: Transformer<R, T>): Bulk<R, T> {
                     : [state, exBreak];
             }
 
-            if (event.kind === 'continue') return [state, exAwait];
-            if (event.kind === 'break')
-                return [[transformer(state[0]), 0], exContinue];
+            if (event.kind === 'break') {
+                const array = transformer(state[0]);
+                return [[array, 0], exContinue];
+            }
 
-            state[0].push(event.value);
-            return [state, exContinue];
+            if (event.kind === 'yield') state[0].push(event.value);
+            return [state, exAwait];
         },
     };
 }

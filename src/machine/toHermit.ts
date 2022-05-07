@@ -25,10 +25,10 @@ export function toHermit<Q, R, S, U>(
             if (csa.kind === 'return') return [[pds, pda, css, csa], csa];
 
             if (csa.kind === 'continue')
-                return [[pds, pda, ...consumer.next(css, csa)], exContinue];
+                return [[pds, pda, ...consumer.next(css, csa)], csa];
 
             if (pda.kind === 'continue')
-                return [[...producer.next(pds, pda), css, csa], exContinue];
+                return [[...producer.next(pds, pda), css, csa], pda];
 
             const [pss2, psa2] = consumer.next(css, pda);
             return pda.kind === 'yield'

@@ -1,10 +1,4 @@
-import {
-    Consumer,
-    exAwait,
-    exContinue,
-    exReturn,
-    nop,
-} from '../machine/machine';
+import { Consumer, exAwait, exReturn, nop } from '../machine/machine';
 
 type Includes<T> = Consumer<T, undefined, boolean>;
 export function includes<T>(value: T): Includes<T> {
@@ -14,9 +8,7 @@ export function includes<T>(value: T): Includes<T> {
         next: (_, event) => {
             if (event.kind === 'continue') return [_, exAwait];
             if (event.kind === 'break') return [_, exReturn(false)];
-            return event.value === value
-                ? [_, exReturn(true)]
-                : [_, exContinue];
+            return event.value === value ? [_, exReturn(true)] : [_, exAwait];
         },
     };
 }

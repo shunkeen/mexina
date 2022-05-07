@@ -25,10 +25,10 @@ export function toProducer<Q, R, S, T>(
             if (psa.kind === 'yield') return [[pds, pda, pss, exContinue], psa];
 
             if (psa.kind === 'continue')
-                return [[pds, pda, ...prosumer.next(pss, psa)], exContinue];
+                return [[pds, pda, ...prosumer.next(pss, psa)], psa];
 
             if (pda.kind === 'continue')
-                return [[...producer.next(pds, pda), pss, psa], exContinue];
+                return [[...producer.next(pds, pda), pss, psa], pda];
 
             const [pss2, psa2] = prosumer.next(pss, pda);
             return pda.kind === 'yield'

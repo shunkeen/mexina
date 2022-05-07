@@ -1,10 +1,4 @@
-import {
-    Consumer,
-    exAwait,
-    exContinue,
-    exReturn,
-    nop,
-} from '../machine/machine';
+import { Consumer, exAwait, exReturn, nop } from '../machine/machine';
 
 type Join = Consumer<string, readonly [boolean, string], string>;
 export function join(separator = ','): Join {
@@ -17,8 +11,8 @@ export function join(separator = ','): Join {
                 return [[isFirst, result], exReturn(result)];
 
             return isFirst
-                ? [[false, event.value], exContinue]
-                : [[false, `${result}${separator}${event.value}`], exContinue];
+                ? [[false, event.value], exAwait]
+                : [[false, `${result}${separator}${event.value}`], exAwait];
         },
     };
 }
