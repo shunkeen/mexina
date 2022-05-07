@@ -20,6 +20,22 @@ test('non empty', () => {
     expect(array).toStrictEqual(['!', '!', '!']);
 });
 
+test('full fill: empty', () => {
+    const array = exArray<number>([]).pipe(fill('!')).get;
+    expect(array.length).toBe(0);
+
+    const _: ReadonlyArray<string> = array;
+    void _; // type test
+});
+
+test('full fill', () => {
+    const array = exArray([1, 2, 3]).pipe(fill('!')).get;
+    expect(array).toStrictEqual(['!', '!', '!']);
+
+    const _: ReadonlyArray<string> = array;
+    void _; // type test
+});
+
 test('start', () => {
     const array = exArray(['a', 'b', 'c']).pipe(fill('!', 1)).get;
     expect(array).toStrictEqual(['a', '!', '!']);
