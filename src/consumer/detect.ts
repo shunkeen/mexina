@@ -5,8 +5,10 @@ import { NotFoundError } from '../datatype/notFoundError';
 type Guard<R, T extends R> = (value: R) => value is T;
 type Detect<R, T extends R> = Consumer<R, undefined, ExCatch<T, NotFoundError>>;
 
-export function detect<R, T extends R>(guard: Guard<R, T>): Detect<R, T> {
-    return {
+export const detect = makeDetectFunction('detect');
+
+export function makeDetectFunction(name: string) {
+    return <R, T extends R>(guard: Guard<R, T>): Detect<R, T> => ({
         done: nop,
         init: undefined,
         next: (_, event) => {
@@ -16,9 +18,9 @@ export function detect<R, T extends R>(guard: Guard<R, T>): Detect<R, T> {
                     ? [_, exReturn(exReturn(event.value))]
                     : [_, exAwait];
 
-            const error = new NotFoundError('mexina.detect: not found');
+            const error = new NotFoundError(`mexina.${name}: not found`);
             const result = exThrow(error);
             return [_, exReturn(result)];
         },
-    };
+    });
 }
