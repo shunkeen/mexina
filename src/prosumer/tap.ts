@@ -1,15 +1,10 @@
-import { Prosumer, exAwait, nop } from '../machine/machine';
+import { Prosumer } from '../machine/machine';
+import { map } from './map';
 
-type Tap<T> = Prosumer<T, void, T>;
+type Tap<T> = Prosumer<T, undefined, T>;
 export function tap<T>(body: (value: T) => void): Tap<T> {
-    return {
-        done: nop,
-        init: undefined,
-        next: (_, event) => {
-            if (event.kind === 'continue') return [_, exAwait];
-            return event.kind === 'break'
-                ? [_, event]
-                : [void body(event.value), event];
-        },
-    };
+    return map((value) => {
+        body(value);
+        return value;
+    });
 }
