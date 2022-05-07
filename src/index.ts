@@ -60,6 +60,7 @@ export { detect } from './consumer/detect';
 export { at } from './consumer/at';
 export { every } from './consumer/every';
 export { find } from './consumer/find';
+export { findIndex } from './consumer/findIndex';
 export { forEach } from './consumer/forEach';
 export { toArray } from './consumer/toArray';
 
