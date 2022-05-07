@@ -63,6 +63,6 @@ export function exYield<T>(value: T): ExYield<T> {
     };
 }
 
-export function nop(_: unknown): void {
+export function nop(): void {
     // nop
 }
