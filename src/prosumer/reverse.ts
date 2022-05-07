@@ -12,13 +12,13 @@ export function reverse<T>(): Reverse<T> {
     return {
         done: nop,
         init: nil,
-        next: (list, action) => {
-            if (action.kind === 'continue') return [list, exAwait];
-            if (action.kind === 'yield')
-                return [cons(action.value, list), exContinue];
+        next: (list, event) => {
+            if (event.kind === 'continue') return [list, exAwait];
+            if (event.kind === 'yield')
+                return [cons(event.value, list), exContinue];
 
             return list.kind === 'nil'
-                ? [list, action]
+                ? [list, event]
                 : [list.tail, exYield(list.head)];
         },
     };

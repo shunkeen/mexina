@@ -5,10 +5,10 @@ export function filter<T>(predicate: (value: T) => boolean): Filter<T> {
     return {
         done: nop,
         init: undefined,
-        next: (_, action) => {
-            if (action.kind === 'continue') return [_, exAwait];
-            if (action.kind === 'break') return [_, exBreak];
-            return predicate(action.value) ? [_, action] : [_, exAwait];
+        next: (_, event) => {
+            if (event.kind === 'continue') return [_, exAwait];
+            if (event.kind === 'break') return [_, exBreak];
+            return predicate(event.value) ? [_, event] : [_, exAwait];
         },
     };
 }

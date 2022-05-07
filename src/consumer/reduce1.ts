@@ -7,23 +7,23 @@ type Reducer1<T> = (result: T, value: T) => T;
 export function reduce1<T>(reducer: Reducer1<T>): Reduce1<T> {
     return {
         done: nop,
-        init: exThrow(new RangeError('dummy')),
-        next: (result, action) => {
-            if (action.kind === 'continue') return [result, exAwait];
-            if (result.kind === 'return') {
-                return action.kind === 'break'
-                    ? [result, exReturn(result)]
-                    : [exReturn(reducer(result.value, action.value)), exAwait];
+        init: exThrow(new RangeError('temp')),
+        next: (temp, event) => {
+            if (event.kind === 'continue') return [temp, exAwait];
+            if (temp.kind === 'return') {
+                return event.kind === 'break'
+                    ? [temp, exReturn(temp)]
+                    : [exReturn(reducer(temp.value, event.value)), exAwait];
             }
 
-            if (action.kind === 'yield') {
-                const first = exReturn(action.value);
+            if (event.kind === 'yield') {
+                const first = exReturn(event.value);
                 return [first, exAwait];
             }
 
             const error = new RangeError('mexina.reduce1: index out of range');
-            const result2 = exThrow(error);
-            return [result2, exReturn(result2)];
+            const result = exThrow(error);
+            return [result, exReturn(result)];
         },
     };
 }

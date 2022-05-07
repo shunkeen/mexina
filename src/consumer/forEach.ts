@@ -11,11 +11,11 @@ export function forEach<T>(body: (value: T) => void): ForEach<T> {
     return {
         done: nop,
         init: undefined,
-        next: (_, action) => {
-            if (action.kind === 'continue') return [_, exAwait];
-            return action.kind === 'break'
+        next: (_, event) => {
+            if (event.kind === 'continue') return [_, exAwait];
+            return event.kind === 'break'
                 ? [_, exReturn(_)]
-                : [void body(action.value), exContinue];
+                : [void body(event.value), exContinue];
         },
     };
 }

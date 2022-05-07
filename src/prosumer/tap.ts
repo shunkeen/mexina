@@ -5,11 +5,11 @@ export function tap<T>(body: (value: T) => void): Tap<T> {
     return {
         done: nop,
         init: undefined,
-        next: (_, action) => {
-            if (action.kind === 'continue') return [_, exAwait];
-            return action.kind === 'break'
+        next: (_, event) => {
+            if (event.kind === 'continue') return [_, exAwait];
+            return event.kind === 'break'
                 ? [_, exBreak]
-                : [void body(action.value), action];
+                : [void body(event.value), event];
         },
     };
 }

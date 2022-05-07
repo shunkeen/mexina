@@ -10,9 +10,9 @@ type Lenth = Consumer<unknown, number, number>;
 export const length: Lenth = {
     done: nop,
     init: 0,
-    next: (count, action) => {
-        if (action.kind === 'continue') return [count, exAwait];
-        return action.kind === 'break'
+    next: (count, event) => {
+        if (event.kind === 'continue') return [count, exAwait];
+        return event.kind === 'break'
             ? [count, exReturn(count)]
             : [count + 1, exContinue];
     },

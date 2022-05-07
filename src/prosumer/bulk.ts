@@ -15,7 +15,7 @@ export function bulk<R, T>(transformer: Transformer<R, T>): Bulk<R, T> {
     return {
         done: nop,
         init: [[]],
-        next: (state, action) => {
+        next: (state, event) => {
             if (state.length === 2) {
                 const [array, index] = state;
                 return 0 <= index && index < array.length
@@ -23,11 +23,11 @@ export function bulk<R, T>(transformer: Transformer<R, T>): Bulk<R, T> {
                     : [state, exBreak];
             }
 
-            if (action.kind === 'continue') return [state, exAwait];
-            if (action.kind === 'break')
+            if (event.kind === 'continue') return [state, exAwait];
+            if (event.kind === 'break')
                 return [[transformer(state[0]), 0], exContinue];
 
-            state[0].push(action.value);
+            state[0].push(event.value);
             return [state, exContinue];
         },
     };

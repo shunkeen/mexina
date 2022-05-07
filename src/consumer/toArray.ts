@@ -11,10 +11,10 @@ export function toArray<T>(): ToArray<T> {
     return {
         done: nop,
         init: [],
-        next: (array, action) => {
-            if (action.kind === 'continue') return [array, exAwait];
-            if (action.kind === 'break') return [array, exReturn(array)];
-            array.push(action.value);
+        next: (array, event) => {
+            if (event.kind === 'continue') return [array, exAwait];
+            if (event.kind === 'break') return [array, exReturn(array)];
+            array.push(event.value);
             return [array, exContinue];
         },
     };

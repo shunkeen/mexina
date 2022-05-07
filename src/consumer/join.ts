@@ -11,14 +11,14 @@ export function join(separator = ','): Join {
     return {
         done: nop,
         init: [true, ''],
-        next: ([isFirst, result], action) => {
-            if (action.kind === 'continue') return [[isFirst, result], exAwait];
-            if (action.kind === 'break')
+        next: ([isFirst, result], event) => {
+            if (event.kind === 'continue') return [[isFirst, result], exAwait];
+            if (event.kind === 'break')
                 return [[isFirst, result], exReturn(result)];
 
             return isFirst
-                ? [[false, action.value], exContinue]
-                : [[false, `${result}${separator}${action.value}`], exContinue];
+                ? [[false, event.value], exContinue]
+                : [[false, `${result}${separator}${event.value}`], exContinue];
         },
     };
 }
