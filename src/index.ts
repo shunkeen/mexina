@@ -62,6 +62,7 @@ export { every } from './consumer/every';
 export { find } from './consumer/find';
 export { findIndex } from './consumer/findIndex';
 export { forEach } from './consumer/forEach';
+export { indexOf } from './consumer/indexOf';
 export { toArray } from './consumer/toArray';
 
 /**
