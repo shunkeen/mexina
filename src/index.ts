@@ -45,6 +45,7 @@ export { entries } from './prosumer/entries';
 export { fill } from './prosumer/fill';
 export { filter } from './prosumer/filter';
 export { flatMap } from './prosumer/flatMap';
+export { keys } from './prosumer/keys';
 export { map } from './prosumer/map';
 export { reverse } from './prosumer/reverse';
 export { slice } from './prosumer/slice';
