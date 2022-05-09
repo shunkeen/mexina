@@ -1,22 +1,14 @@
-import { Prosumer, exAwait, exBreak, nop } from '../machine/machine';
+import { Prosumer, machine, exAwait, exBreak } from '../machine/machine';
 
 type Slice<T> = Prosumer<T, number, T>;
-export function slice<T>(start = 0, end = Infinity): Slice<T> {
-    if (end <= Math.max(0, start)) {
-        return {
-            done: nop,
-            init: 0,
-            next: () => [0, exBreak],
-        };
-    }
+export const slice = <T>(start = 0, end = Infinity): Slice<T> =>
+    end <= Math.max(0, start) ? empty() : nonEmpty(start, end);
 
-    return {
-        done: nop,
-        init: 0,
-        next: (count, event) => {
-            if (count >= end || event.kind === 'break') return [count, exBreak];
-            if (event.kind === 'continue') return [count, exAwait];
-            return count < start ? [count + 1, exAwait] : [count + 1, event];
-        },
-    };
-}
+const empty = <T>(): Slice<T> => machine<Slice<T>>(0, () => [0, exBreak]);
+
+const nonEmpty = <T>(start = 0, end = Infinity): Slice<T> =>
+    machine<Slice<T>>(0, (count, event) => {
+        if (count >= end || event.kind === 'break') return [count, exBreak];
+        if (event.kind === 'continue') return [count, exAwait];
+        return count < start ? [count + 1, exAwait] : [count + 1, event];
+    });

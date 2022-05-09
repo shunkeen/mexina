@@ -1,15 +1,11 @@
-import { Consumer, exAwait, exReturn, nop } from '../machine/machine';
+import { Consumer, machine, exAwait, exReturn } from '../machine/machine';
 
 type ToArray<T> = Consumer<T, Array<T>, ReadonlyArray<T>>;
-export function toArray<T>(): ToArray<T> {
-    return {
-        done: nop,
-        init: [],
-        next: (array, event) => {
-            if (event.kind === 'continue') return [array, exAwait];
-            if (event.kind === 'break') return [array, exReturn(array)];
-            array.push(event.value);
-            return [array, exAwait];
-        },
-    };
-}
+export const toArray = <T>(): ToArray<T> =>
+    machine<ToArray<T>>([], (array, event) => {
+        if (event.kind === 'continue') return [array, exAwait];
+        if (event.kind === 'break') return [array, exReturn(array)];
+
+        array.push(event.value);
+        return [array, exAwait];
+    });

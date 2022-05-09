@@ -1,4 +1,4 @@
-import { Consumer, exAwait, exReturn, nop } from '../machine/machine';
+import { Consumer, machine, exAwait, exReturn } from '../machine/machine';
 import { ExCatch, exThrow } from '../datatype/exCatch';
 import { NotFoundError } from '../datatype/notFoundError';
 
@@ -10,10 +10,8 @@ type FindFunction = {
 
 export const find: FindFunction = <R, T extends R>(
     predicate: ((value: R) => value is T) | ((value: R) => boolean)
-): Find<R, T> => ({
-    done: nop,
-    init: undefined,
-    next: (_, event) => {
+): Find<R, T> =>
+    machine<Find<R, T>>(undefined, (_, event) => {
         if (event.kind === 'continue') return [_, exAwait];
         if (event.kind === 'yield')
             return predicate(event.value)
@@ -21,7 +19,5 @@ export const find: FindFunction = <R, T extends R>(
                 : [_, exAwait];
 
         const error = new NotFoundError('mexina.find: not found');
-        const result = exThrow(error);
-        return [_, exReturn(result)];
-    },
-});
+        return [_, exReturn(exThrow(error))];
+    });

@@ -1,4 +1,4 @@
-import { Prosumer, exAwait, exYield, nop } from '../machine/machine';
+import { Prosumer, machine, exAwait, exYield } from '../machine/machine';
 
 type Filter<R, T extends R> = Prosumer<R, undefined, T>;
 type FilterFunction = {
@@ -8,13 +8,11 @@ type FilterFunction = {
 
 export const filter: FilterFunction = <R, T extends R>(
     predicate: ((value: R) => value is T) | ((value: R) => boolean)
-): Filter<R, T> => ({
-    done: nop,
-    init: undefined,
-    next: (_, event) => {
+): Filter<R, T> =>
+    machine<Filter<R, T>>(undefined, (_, event) => {
         if (event.kind === 'continue') return [_, exAwait];
         if (event.kind === 'break') return [_, event];
+
         const { value } = event;
         return predicate(value) ? [_, exYield(value)] : [_, exAwait];
-    },
-});
+    });

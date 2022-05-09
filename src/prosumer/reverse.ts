@@ -1,19 +1,23 @@
-import { Prosumer, exAwait, exYield, nop } from '../machine/machine';
+import {
+    Prosumer,
+    machine,
+    exAwait,
+    exBreak,
+    exContinue,
+    exYield,
+} from '../machine/machine';
 import { List, nil, cons } from '../datatype/list';
 
-type Reverse<T> = Prosumer<T, List<T>, T>;
-export function reverse<T>(): Reverse<T> {
-    return {
-        done: nop,
-        init: nil,
-        next: (list, event) => {
-            if (event.kind === 'continue') return [list, exAwait];
-            if (event.kind === 'yield')
-                return [cons(event.value, list), exAwait];
-
+type Reverse<T> = Prosumer<T, readonly [boolean, List<T>], T>;
+export const reverse = <T>(): Reverse<T> =>
+    machine<Reverse<T>>([false, nil], ([isBroken, list], event) => {
+        if (isBroken)
             return list.kind === 'nil'
-                ? [list, event]
-                : [list.tail, exYield(list.head)];
-        },
-    };
-}
+                ? [[isBroken, list], exBreak]
+                : [[isBroken, list.tail], exYield(list.head)];
+
+        if (event.kind === 'break') return [[true, list], exContinue];
+        return event.kind === 'continue'
+            ? [[isBroken, list], exAwait]
+            : [[isBroken, cons(event.value, list)], exAwait];
+    });

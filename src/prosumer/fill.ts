@@ -1,4 +1,4 @@
-import { Prosumer, exAwait, exYield, nop } from '../machine/machine';
+import { Prosumer, machine, exAwait, exYield } from '../machine/machine';
 
 type Fill<R, T> = Prosumer<R, number, T>;
 type FillFunction = {
@@ -13,27 +13,17 @@ export const fill: FillFunction = <T>(
 ): Fill<unknown, T> | Fill<T, T> =>
     start === undefined ? full(value) : moderate(value, start, end);
 
-function full<T>(value: T): Fill<unknown, T> {
-    return {
-        done: nop,
-        init: 0,
-        next: (_, event) => {
-            if (event.kind === 'continue') return [_, exAwait];
-            return event.kind === 'break' ? [_, event] : [_, exYield(value)];
-        },
-    };
-}
+const full = <T>(value: T): Fill<unknown, T> =>
+    machine<Fill<unknown, T>>(0, (_, event) => {
+        if (event.kind === 'continue') return [_, exAwait];
+        return event.kind === 'break' ? [_, event] : [_, exYield(value)];
+    });
 
-function moderate<T>(value: T, start: number, end: number): Fill<T, T> {
-    return {
-        done: nop,
-        init: 0,
-        next: (count, event) => {
-            if (event.kind === 'continue') return [count, exAwait];
-            if (event.kind === 'break') return [count, event];
-            return start <= count && count < end
-                ? [count + 1, exYield(value)]
-                : [count + 1, event];
-        },
-    };
-}
+const moderate = <T>(value: T, start: number, end: number): Fill<T, T> =>
+    machine<Fill<T, T>>(0, (count, event) => {
+        if (event.kind === 'continue') return [count, exAwait];
+        if (event.kind === 'break') return [count, event];
+        return start <= count && count < end
+            ? [count + 1, exYield(value)]
+            : [count + 1, event];
+    });
