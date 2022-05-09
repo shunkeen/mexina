@@ -75,6 +75,7 @@ export { toArray } from './consumer/toArray';
  */
 export {
     Machine,
+    machine,
     Hermit,
     HermitAction,
     HermitEvent,

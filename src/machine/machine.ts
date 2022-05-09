@@ -3,6 +3,18 @@ export type Machine<E, S, A> = Readonly<{
     next: (state: S, event: E) => readonly [S, A];
     done: (state: S) => void;
 }>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function machine<M extends Machine<any, any, any>>(
+    init: M['init'],
+    next: M['next'],
+    done: M['done'] = nop
+): Machine<Parameters<M['next']>[1], M['init'], ReturnType<M['next']>[1]> {
+    return {
+        init,
+        next,
+        done,
+    };
+}
 
 export type Hermit<S, U> = Machine<HermitEvent, S, HermitAction<U>>;
 export type HermitEvent = ExContinue;
