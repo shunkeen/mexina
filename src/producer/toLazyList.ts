@@ -2,24 +2,24 @@ import { Producer, ProducerAction, exContinue } from '../machine/machine';
 import { LazyList, lazyList, nil, lazyTail } from '../datatype/lazyList';
 import { exThrow } from '../datatype/exCatch';
 
-export function toLazyList<S, T>(producer: Producer<S, T>): LazyList<T> {
-    return lazyList(() => {
-        const { next, done } = producer;
-        let state = producer.init;
+export const toLazyList = <S, T>(producer: Producer<S, T>): LazyList<T> =>
+    _toLazyList(producer.init, producer);
+
+const _toLazyList = <S, T>(init: S, producer: Producer<S, T>): LazyList<T> =>
+    lazyList(() => {
+        let state = init;
         let action: ProducerAction<T> = exContinue;
         try {
-            while (action.kind === 'continue') {
-                [state, action] = next(state, action);
-            }
-            if (action.kind === 'break') {
-                done(state);
-                return nil;
-            }
-            const tail = toLazyList({ init: state, next, done });
-            return lazyTail(action.value, tail);
+            while (action.kind === 'continue')
+                [state, action] = producer.next(state, action);
+
+            if (action.kind === 'yield')
+                return lazyTail(action.value, _toLazyList(state, producer));
+
+            producer.done(state);
+            return nil;
         } catch (cause) {
-            done(state);
+            producer.done(state);
             throw cause instanceof Error ? exThrow(cause) : cause;
         }
     });
-}
