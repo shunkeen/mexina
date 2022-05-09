@@ -3,6 +3,7 @@ import {
     ProducerAction,
     Prosumer,
     ProsumerAction,
+    machine,
     exContinue,
 } from './machine';
 
@@ -14,13 +15,14 @@ export type DeProducer<Q, R, S, T> = readonly [
 ];
 
 type ToProducer<Q, R, S, T> = Producer<DeProducer<Q, R, S, T>, T>;
-export function toProducer<Q, R, S, T>(
+export const toProducer = <Q, R, S, T>(
     producer: Producer<Q, R>,
     prosumer: Prosumer<R, S, T>
-): ToProducer<Q, R, S, T> {
-    return {
-        init: [producer.init, exContinue, prosumer.init, exContinue],
-        next: ([pds, pda, pss, psa]) => {
+): ToProducer<Q, R, S, T> =>
+    machine(
+        [producer.init, exContinue, prosumer.init, exContinue],
+
+        ([pds, pda, pss, psa]) => {
             if (psa.kind === 'break') return [[pds, pda, pss, psa], psa];
             if (psa.kind === 'yield') return [[pds, pda, pss, exContinue], psa];
 
@@ -36,9 +38,8 @@ export function toProducer<Q, R, S, T>(
                 : [[pds, pda, pss2, psa2], exContinue];
         },
 
-        done: ([pds, _, pss, __]) => {
+        ([pds, _, pss, __]) => {
             producer.done(pds);
             prosumer.done(pss);
-        },
-    };
-}
+        }
+    );
