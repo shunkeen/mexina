@@ -19,11 +19,13 @@ export { ExReturn, exReturn } from '../machine/machine';
 
 export class ExThrow<E extends Error> extends Error {
     public readonly kind: 'throw';
+    public readonly value: undefined;
     constructor(readonly cause: E) {
         super(`exThrow(${cause.message})`);
         this.name = `ExThrow<${cause.name}>`;
         this.stack = cause.stack;
         this.kind = 'throw';
+        this.value = undefined;
         Object.setPrototypeOf(this, ExThrow.prototype);
     }
 }
