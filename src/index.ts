@@ -119,5 +119,3 @@ export {
     lazyTail,
     ReturnLazyList,
 } from './datatype/lazyList';
-
-export { NotFoundError } from './datatype/notFoundError';
