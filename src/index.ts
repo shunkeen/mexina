@@ -66,6 +66,7 @@ export { join } from './consumer/join';
 export { lastIndexOf } from './consumer/lastIndexOf';
 export { length } from './consumer/length';
 export { reduce } from './consumer/reduce';
+export { reduceRight } from './consumer/reduceRight';
 export { some } from './consumer/some';
 export { toArray } from './consumer/toArray';
 

@@ -1,7 +1,7 @@
 import { Consumer } from '../machine/machine';
-import { ExCatch } from '../datatype/exCatch';
-import { reduceL1, reduceL } from './exReduce';
 import { rethrow } from './rethrow';
+import { reduceL, reduceL1 } from './exReduce';
+import { ExCatch } from '../datatype/exCatch';
 
 type Reduce<R, T> = Consumer<R, T, T>;
 type Reduce1<R> = Consumer<R, ExCatch<R, TypeError>, R>;
