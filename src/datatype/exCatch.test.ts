@@ -6,6 +6,7 @@ test('return', () => {
     });
 
     const x = exTry(() => 0);
+    if (x.kind === 'throw') throw x;
     expect(x.value).toBe(0);
 });
 
@@ -24,8 +25,6 @@ test('catch', () => {
     const x = exTry(() => {
         throw EvalError('catch');
     });
-
-    expect(x.value).toBe(undefined);
 
     if (x.kind === 'return') throw new TypeError();
     expect(x.cause).toBeInstanceOf(EvalError);
@@ -54,8 +53,6 @@ test('rethrow', () => {
             throw e;
         }
     })();
-
-    expect(x.value).toBe(undefined);
 
     if (x.kind === 'return') throw new TypeError();
     expect(x.cause).toBeInstanceOf(SyntaxError);

@@ -108,6 +108,7 @@ export { DeProducer, toProducer } from './machine/toProducer';
  * datatype
  */
 export { ExCatch, exCatch, ExThrow, exThrow } from './datatype/exCatch';
+export { ExOptional, ExUndefined, exUndefined } from './datatype/exOptional';
 
 export {
     LazyList,
