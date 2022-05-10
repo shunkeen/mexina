@@ -6,6 +6,7 @@ import {
     ConsumerAction,
     machine,
     exContinue,
+    nop,
 } from './machine';
 
 export type DeHermit<Q, R, S, U> = readonly [
@@ -38,8 +39,10 @@ export const toHermit = <Q, R, S, U>(
                 : [[pds, pda, pss2, psa2], exContinue];
         },
 
-        ([pds, _, css, __]) => {
-            producer.done(pds);
-            consumer.done(css);
-        }
+        producer.done === nop && consumer.done === nop
+            ? nop
+            : ([pds, _, css, __]) => {
+                  producer.done(pds);
+                  consumer.done(css);
+              }
     );

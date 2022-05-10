@@ -5,6 +5,7 @@ import {
     machine,
     exAwait,
     exContinue,
+    nop,
 } from '../machine/machine';
 
 type Concat<S, T> = Prosumer<T, readonly [S, ProducerAction<T>], T>;
@@ -23,5 +24,5 @@ export const concat = <S, T>(producer: Producer<S, T>): Concat<S, T> =>
                 : [producer.next(state, action), action];
         },
 
-        ([state, _]) => producer.done(state)
+        producer.done === nop ? nop : ([state, _]) => producer.done(state)
     );

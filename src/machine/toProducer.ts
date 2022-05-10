@@ -5,6 +5,7 @@ import {
     ProsumerAction,
     machine,
     exContinue,
+    nop,
 } from './machine';
 
 export type DeProducer<Q, R, S, T> = readonly [
@@ -38,8 +39,10 @@ export const toProducer = <Q, R, S, T>(
                 : [[pds, pda, pss2, psa2], exContinue];
         },
 
-        ([pds, _, pss, __]) => {
-            producer.done(pds);
-            prosumer.done(pss);
-        }
+        producer.done === nop && prosumer.done === nop
+            ? nop
+            : ([pds, _, pss, __]) => {
+                  producer.done(pds);
+                  prosumer.done(pss);
+              }
     );
