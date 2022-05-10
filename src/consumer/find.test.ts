@@ -1,6 +1,5 @@
 import {
     find,
-    NotFoundError,
     exArray,
     exGenerator,
     exIterable,
@@ -12,48 +11,39 @@ import {
 
 test('found', () => {
     const x = exArray([1, 2, 3]).end(find((x) => x > 1));
-    if (x.kind === 'throw') throw x;
-    expect(x.value).toBe(2);
+    expect(x).toBe(2);
 });
 
 test('not found', () => {
     const x = exArray([1, 2, 3]).end(find((x) => x > 5));
-    if (x.kind === 'return') throw new TypeError();
-    expect(x.cause).toBeInstanceOf(NotFoundError);
-    expect(x.cause.message).toBe('mexina.find: not found');
+    expect(x).toBe(undefined);
 });
 
 test('empty', () => {
     const x = exArray([]).end(find((x) => x > 5));
-    if (x.kind === 'return') throw new TypeError();
-    expect(x.cause).toBeInstanceOf(NotFoundError);
-    expect(x.cause.message).toBe('mexina.find: not found');
+    expect(x).toBe(undefined);
 });
 
 test('found with type guard', () => {
     const isString = (x: unknown): x is string => typeof x === 'string';
     const x = exArray([1, 'b', 3]).end(find(isString));
-    if (x.kind === 'throw') throw x;
-    expect(x.value).toBe('b');
+    expect(x).toBe('b');
 
-    const _: string = x.value;
+    if (x === undefined) throw new TypeError('undefined');
+    const _: string = x;
     void _; // type test
 });
 
 test('not found with type guard', () => {
     const isString = (x: unknown): x is string => typeof x === 'string';
     const x = exArray([1, 2, 3]).end(find(isString));
-    if (x.kind === 'return') throw new TypeError();
-    expect(x.cause).toBeInstanceOf(NotFoundError);
-    expect(x.cause.message).toBe('mexina.find: not found');
+    expect(x).toBe(undefined);
 });
 
 test('empty with type guard', () => {
     const isString = (x: unknown): x is string => typeof x === 'string';
     const x = exArray([]).end(find(isString));
-    if (x.kind === 'return') throw new TypeError();
-    expect(x.cause).toBeInstanceOf(NotFoundError);
-    expect(x.cause.message).toBe('mexina.find: not found');
+    expect(x).toBe(undefined);
 });
 
 test('exGenerator', () => {
@@ -62,8 +52,7 @@ test('exGenerator', () => {
     }
 
     const x = exGenerator(infinite()).end(find((x) => x > 1));
-    if (x.kind === 'throw') throw x;
-    expect(x.value).toBe(2);
+    expect(x).toBe(2);
 });
 
 test('exIterable', () => {
@@ -74,8 +63,7 @@ test('exIterable', () => {
     };
 
     const x = exIterable(infinite).end(find((x) => x > 1));
-    if (x.kind === 'throw') throw x;
-    expect(x.value).toBe(2);
+    expect(x).toBe(2);
 });
 
 test('exLazyList', () => {
@@ -84,6 +72,5 @@ test('exLazyList', () => {
     const ll3 = lazyList(() => lazyTail(3, ll1));
 
     const x = exLazyList(ll1).end(find((x) => x > 1));
-    if (x.kind === 'throw') throw x;
-    expect(x.value).toBe(2);
+    expect(x).toBe(2);
 });

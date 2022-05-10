@@ -1,6 +1,5 @@
 import {
     indexOf,
-    NotFoundError,
     exArray,
     exGenerator,
     exIterable,
@@ -12,22 +11,17 @@ import {
 
 test('found', () => {
     const x = exArray(['a', 'b', 'c']).end(indexOf('b'));
-    if (x.kind === 'throw') throw x;
-    expect(x.value).toBe(1);
+    expect(x).toBe(1);
 });
 
 test('not found', () => {
     const x = exArray(['a', 'b', 'c']).end(indexOf('!'));
-    if (x.kind === 'return') throw new TypeError();
-    expect(x.cause).toBeInstanceOf(NotFoundError);
-    expect(x.cause.message).toBe('mexina.indexOf: not found');
+    expect(x).toBe(-1);
 });
 
 test('empty', () => {
     const x = exArray([]).end(indexOf('!'));
-    if (x.kind === 'return') throw new TypeError();
-    expect(x.cause).toBeInstanceOf(NotFoundError);
-    expect(x.cause.message).toBe('mexina.indexOf: not found');
+    expect(x).toBe(-1);
 });
 
 test('exGenerator', () => {
@@ -36,8 +30,7 @@ test('exGenerator', () => {
     }
 
     const x = exGenerator(infinite()).end(indexOf('b'));
-    if (x.kind === 'throw') throw x;
-    expect(x.value).toBe(1);
+    expect(x).toBe(1);
 });
 
 test('exIterable', () => {
@@ -48,8 +41,7 @@ test('exIterable', () => {
     };
 
     const x = exIterable(infinite).end(indexOf('b'));
-    if (x.kind === 'throw') throw x;
-    expect(x.value).toBe(1);
+    expect(x).toBe(1);
 });
 
 test('exLazyList', () => {
@@ -58,6 +50,5 @@ test('exLazyList', () => {
     const llC = lazyList(() => lazyTail('c', llA));
 
     const x = exLazyList(llA).end(indexOf('b'));
-    if (x.kind === 'throw') throw x;
-    expect(x.value).toBe(1);
+    expect(x).toBe(1);
 });
